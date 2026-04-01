@@ -11,6 +11,10 @@ const nextConfig = {
       },
     ]
   },
+  allowedDevOrigins: [
+    "http://localhost",
+    "192.168.1.5"
+  ],
 }
 
 module.exports = nextConfig
