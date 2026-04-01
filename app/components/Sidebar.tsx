@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { triggerFormSchema } from "../utils/validateEmail";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { triggerBackend } from "../services/api";
 
 const HOURS_OPTIONS = [
@@ -23,11 +23,14 @@ export default function Sidebar() {
     resolver: zodResolver(triggerFormSchema),
   });
 
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: triggerBackend,
     onSuccess: () => {
       // alert("Backend triggered successfully");
       reset();
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
     },
     onError: () => {
       alert("Something went wrong");

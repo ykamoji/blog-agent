@@ -34,45 +34,17 @@ def run_daily_pipeline(hours: int = 24, top_n: int = 10, email: list = None) -> 
     }
     
     try:
-        logger.info("\n[1/5] Scraping articles from sources...")
-        scraping_results = run_scrapers(hours=hours)
-        results["scraping"] = {
-            "youtube": len(scraping_results.get("youtube", [])),
-            "openai": len(scraping_results.get("openai", [])),
-            "anthropic": len(scraping_results.get("anthropic", []))
-        }
-        logger.info(f"✓ Scraped {results['scraping']['youtube']} YouTube videos, "
-                    f"{results['scraping']['openai']} OpenAI articles, "
-                    f"{results['scraping']['anthropic']} Anthropic articles")
-        
-        logger.info("\n[2/5] Processing Anthropic markdown...")
-        anthropic_result = process_anthropic_markdown()
-        results["processing"]["anthropic"] = anthropic_result
-        logger.info(f"✓ Processed {anthropic_result['processed']} Anthropic articles "
-                    f"({anthropic_result['failed']} failed)")
-        
-        logger.info("\n[3/5] Processing YouTube transcripts...")
-        youtube_result = process_youtube_transcripts()
-        results["processing"]["youtube"] = youtube_result
-        logger.info(f"✓ Processed {youtube_result['processed']} transcripts "
-                    f"({youtube_result['unavailable']} unavailable)")
-        
-        logger.info("\n[4/5] Creating digests for articles...")
-        digest_result = process_digests()
-        results["digests"] = digest_result
-        logger.info(f"✓ Created {digest_result['processed']} digests "
-                    f"({digest_result['failed']} failed out of {digest_result['total']} total)")
 
-        logger.info("\n[5/5] Generating and sending email digest...")
-        email_result = send_digest_email(hours=hours, top_n=top_n, email=email)
-        results["email"] = email_result
+        scrapper_runner(hours, results)
 
-        if email_result["success"]:
-            logger.info(f"✓ Email sent successfully with {email_result['articles_count']} articles")
-            results["success"] = True
-        else:
-            logger.error(f"✗ Failed to send email: {email_result.get('error', 'Unknown error')}")
-        
+        anthropic_runner(results)
+
+        youtube_runner(results)
+
+        digest_runner(results)
+
+        email_runner(email, hours, results, top_n)
+
     except Exception as e:
         logger.error(f"Pipeline failed with error: {e}", exc_info=True)
         results["error"] = str(e)
@@ -93,6 +65,54 @@ def run_daily_pipeline(hours: int = 24, top_n: int = 10, email: list = None) -> 
     logger.info("=" * 60)
     
     return results
+
+
+def email_runner(email, hours, results, top_n):
+    logger.info("\n[5/5] Generating and sending email digest...")
+    email_result = send_digest_email(hours=hours, top_n=top_n, email=email)
+    results["email"] = email_result
+    if email_result["success"]:
+        logger.info(f"✓ Email sent successfully with {email_result['articles_count']} articles")
+        results["success"] = True
+    else:
+        logger.error(f"✗ Failed to send email: {email_result.get('error', 'Unknown error')}")
+
+
+def digest_runner(results):
+    logger.info("\n[4/5] Creating digests for articles...")
+    digest_result = process_digests()
+    results["digests"] = digest_result
+    logger.info(f"✓ Created {digest_result['processed']} digests "
+                f"({digest_result['failed']} failed out of {digest_result['total']} total)")
+
+
+def youtube_runner(results):
+    logger.info("\n[3/5] Processing YouTube transcripts...")
+    youtube_result = process_youtube_transcripts()
+    results["processing"]["youtube"] = youtube_result
+    logger.info(f"✓ Processed {youtube_result['processed']} transcripts "
+                f"({youtube_result['unavailable']} unavailable)")
+
+
+def anthropic_runner(results):
+    logger.info("\n[2/5] Processing Anthropic markdown...")
+    anthropic_result = process_anthropic_markdown()
+    results["processing"]["anthropic"] = anthropic_result
+    logger.info(f"✓ Processed {anthropic_result['processed']} Anthropic articles "
+                f"({anthropic_result['failed']} failed)")
+
+
+def scrapper_runner(hours, results):
+    logger.info("\n[1/5] Scraping articles from sources...")
+    scraping_results = run_scrapers(hours=hours)
+    results["scraping"] = {
+        "youtube": len(scraping_results.get("youtube", [])),
+        "openai": len(scraping_results.get("openai", [])),
+        "anthropic": len(scraping_results.get("anthropic", []))
+    }
+    logger.info(f"✓ Scraped {results['scraping']['youtube']} YouTube videos, "
+                f"{results['scraping']['openai']} OpenAI articles, "
+                f"{results['scraping']['anthropic']} Anthropic articles")
 
 
 if __name__ == "__main__":
