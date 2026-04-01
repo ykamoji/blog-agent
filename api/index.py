@@ -1,6 +1,4 @@
-import json
-from datetime import datetime
-from flask import Flask, request, Response, stream_with_context
+from flask import Flask, request
 from .interface.blogs import get_blogs, Pipeline, run_blogs_pipeline
 import logging
 
@@ -11,7 +9,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
-
 
 @app.route("/blogs", methods=['GET'])
 def blogs():
