@@ -1,11 +1,12 @@
 import { z } from "zod";
 
-export const emailSchema = z.object({
+export const triggerFormSchema = z.object({
   email: z
     .string()
     .optional()
-    .refine(// @ts-ignore
-      (val: string) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
+    .refine(
+      (val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
       "Invalid email"
     ),
+  hours: z.string().optional(),
 });

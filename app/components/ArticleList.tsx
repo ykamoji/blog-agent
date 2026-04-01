@@ -13,7 +13,7 @@ export default function ArticleList() {
 
   if (isLoading) {
     return (
-      <div className="grid md:grid-cols-1 gap-4">
+      <div className="grid md:grid-cols-2 gap-6">
         {[...Array(6)].map((_, i) => (
           <LoadingSkeleton key={i} />
         ))}
@@ -30,7 +30,7 @@ export default function ArticleList() {
   }
 
   return (
-    <div className="grid md:grid-cols-1 gap-4">
+    <div className="grid md:grid-cols-2 gap-6">
       {data.map((article: any) => (
         <ArticleCard key={article.article_id} article={article} />
       ))}
