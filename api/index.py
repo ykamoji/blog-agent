@@ -68,3 +68,6 @@ def blogs_email():
     pipe = prepare()
     pipe.send_email()
     return {}
+
+if __name__ == "__main__":
+    app.run(debug=False)
