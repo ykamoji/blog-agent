@@ -24,10 +24,17 @@ def run_blogs_pipeline(hours, email):
 
 
 class Pipeline:
-    def __init__(self, hours, email, results):
+    def __init__(self, hours, email, results=None):
         self.hours = hours
         self.email = email
-        self.results = results
+        self.results = results if results else {
+        "start_time": 0,
+        "scraping": {},
+        "processing": {},
+        "digests": {},
+        "email": {},
+        "success": False
+    }
 
     def scrapper(self):
         scrapper_runner(self.hours, self.results)
@@ -41,5 +48,5 @@ class Pipeline:
     def digest(self):
         digest_runner(self.results)
 
-    def email(self):
+    def send_email(self):
         email_runner(email=self.email, hours=self.hours, results=self.results, top_n=10)
