@@ -1,5 +1,3 @@
-from sympy.physics.units import hours
-
 from api.database.repository import Repository
 from api.daily_runner import (run_daily_pipeline, scrapper_runner,
                               anthropic_runner, youtube_runner, digest_runner, email_runner)

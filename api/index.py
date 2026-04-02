@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_cors import CORS
 from .interface.blogs import get_blogs, Pipeline, run_blogs_pipeline
 import logging
 
@@ -9,6 +10,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
+
+CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 
 @app.route("/blogs", methods=['GET'])
 def blogs():
@@ -31,7 +34,9 @@ def prepare():
     print(data, flush=True)
     hours = int(data.get('hours')) if data.get('hours') else 1000
     email = data.get('email') if data.get('email') else None
-    pipe = Pipeline(hours=hours, email=[email])
+    if email:
+        email = [email]
+    pipe = Pipeline(hours=hours, email=email)
     return pipe
 
 
