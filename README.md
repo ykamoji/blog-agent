@@ -2,6 +2,10 @@
 
 A modern web application that aggregates and displays AI-related news articles from three major sources: **YouTube**, **Anthropic**, and **OpenAI**. The application features a visually attractive dashboard with an intelligent backend pipeline powered by AI agents.
 
+## Visit
+
+https://blog-agent-8p00ja2j9-ykamojis-projects.vercel.app/
+
 ## Overview
 
 The AI News Dashboard provides users with a curated feed of the latest AI news, organized by source category. Users can trigger backend scrapers to fetch fresh content and optionally receive digest emails.
