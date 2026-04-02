@@ -14,7 +14,7 @@ The application executes a multi-stage AI-powered pipeline when triggered:
    - Collects metadata: title, summary, URL, publication date
 
 2. **Anthropic Stage** (`anthropic`)
-   - Uses Claude AI to analyze and enhance article summaries
+   - Uses Google AI to analyze and enhance article summaries
    - Extracts key insights and relevance scores
    - Ensures content quality and consistency
 
@@ -57,7 +57,7 @@ This design allows for:
 ## Technology Stack
 
 **Frontend**:
-- Next.js 16 with React 19
+- Next.js 20 with React 19
 
 **Backend**:
 - Flask for API endpoints
@@ -68,10 +68,16 @@ This design allows for:
 
 ## Features
 
-✨ **Modern Dashboard** - Visually attractive interface with category-based design
+✨ **Dashboard** - Visual interface with category-based design
+
 📱 **Responsive Design** - Works seamlessly on mobile, tablet, and desktop
-🤖 **AI-Powered Processing** - Claude analyzes and enhances article content
+
+🤖 **AI-Powered Processing** - Google analyzes and enhances article content
+
 📧 **Email Digests** - Optional email delivery of curated news
+
 🎯 **Time Range Filtering** - Control how recent articles should be
+
 🔄 **Real-time Progress** - Visual pipeline status during background processing
+
 🔗 **Direct Article Links** - One-click access to full articles
