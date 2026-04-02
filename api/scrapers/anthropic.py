@@ -1,7 +1,9 @@
+import feedparser
+import requests
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
-import feedparser
-from docling.document_converter import DocumentConverter
+from bs4 import BeautifulSoup
+from markdownify import markdownify as md
 from pydantic import BaseModel
 
 
@@ -21,24 +23,23 @@ class AnthropicScraper:
             "https://raw.githubusercontent.com/Olshansk/rss-feeds/main/feeds/feed_anthropic_research.xml",
             "https://raw.githubusercontent.com/Olshansk/rss-feeds/main/feeds/feed_anthropic_engineering.xml",
         ]
-        self.converter = DocumentConverter()
 
     def get_articles(self, hours: int = 24) -> List[AnthropicArticle]:
         now = datetime.now(timezone.utc)
         cutoff_time = now - timedelta(hours=hours)
         articles = []
         seen_guids = set()
-        
+
         for rss_url in self.rss_urls:
             feed = feedparser.parse(rss_url)
             if not feed.entries:
                 continue
-            
+
             for entry in feed.entries:
                 published_parsed = getattr(entry, "published_parsed", None)
                 if not published_parsed:
                     continue
-                
+
                 published_time = datetime(*published_parsed[:6], tzinfo=timezone.utc)
                 if published_time >= cutoff_time:
                     guid = entry.get("id", entry.get("link", ""))
@@ -52,15 +53,25 @@ class AnthropicScraper:
                             published_at=published_time,
                             category=entry.get("tags", [{}])[0].get("term") if entry.get("tags") else None
                         ))
-        
+
         return articles
 
     def url_to_markdown(self, url: str) -> Optional[str]:
         try:
-            result = self.converter.convert(url)
-            return result.document.export_to_markdown()
+            res = requests.get(url, timeout=10)
+            res.raise_for_status()
+
+            soup = BeautifulSoup(res.text, "html.parser")
+
+            for tag in soup(["script", "style", "nav", "footer", "header"]):
+                tag.decompose()
+
+            main = soup.find("article") or soup.body
+
+            return md(str(main), heading_style="ATX")
         except Exception:
             return None
+
 
 if __name__ == "__main__":
     scraper = AnthropicScraper()
