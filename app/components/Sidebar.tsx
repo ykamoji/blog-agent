@@ -8,10 +8,11 @@ import {anthropic, digest, email, scrapper, youtube} from "../services/api";
 import {useState} from "react";
 
 const HOURS_OPTIONS = [
-  { value: "24", label: "Last 24 hours" },
-  { value: "48", label: "Last 48 hours" },
-  { value: "1680", label: "Last Week" },
-  { value: "", label: "All time" },
+  { value: "24", label: "1 Day" },
+  { value: "48", label: "2 Days" },
+  { value: "72", label: "3 Days" },
+  { value: "98", label: "Last Week" },
+  { value: "150", label: "All time" },
 ];
 
 const steps = [
@@ -48,6 +49,8 @@ export default function Sidebar() {
 );
 
   const [showProgress, setShowProgress] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -108,13 +111,13 @@ export default function Sidebar() {
       <div className="sticky top-8">
         <div className="bg-white rounded-2xl shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-1">Get latest digests</h2>
-          <p className="text-sm text-gray-500 mb-5">Run scrapers and optionally send a digest email.</p>
+          <p className="text-sm text-gray-500 mb-5">Run scrapers and get a digest email!</p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Time range
+                Latest
               </label>
               <select
                   {...register("hours")}
@@ -128,19 +131,37 @@ export default function Sidebar() {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email (optional)
-              </label>
-              <input
-                  type="email"
-                  placeholder="name@example.com"
-                  {...register("email")}
-                  className="border border-gray-200 rounded-xl px-4 py-2.5 w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              {errors.email && (
-                  <p className="text-red-500 text-xs mt-1">{errors.email.message as string}</p>
-              )}
+            <div className="border border-gray-200 rounded-xl p-3">
+              {/* Header */}
+              <button
+                  type="button"
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="w-full flex justify-between items-center text-sm font-medium text-gray-700"
+              >
+                <span>Email (optional)</span>
+                <span className="text-gray-400">
+          {isOpen ? "−" : "+"}
+        </span>
+              </button>
+              {/* Collapsible Content */}
+              <div
+                  className={`transition-all duration-300 overflow-hidden ${
+                      isOpen ? "max-h-40 mt-3" : "max-h-0"
+                  }`}
+              >
+                <input
+                    type="email"
+                    placeholder="name@example.com"
+                    {...register("email")}
+                    className="border border-gray-200 rounded-xl px-4 py-2.5 w-full text-sm focus:outline-none"
+                />
+
+                {errors.email && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.email.message}
+                    </p>
+                )}
+              </div>
             </div>
 
             <button
