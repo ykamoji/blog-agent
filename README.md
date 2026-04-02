@@ -4,7 +4,7 @@ A modern web application that aggregates and displays AI-related news articles f
 
 ## Visit
 
-https://blog-agent-git-deployment-ykamojis-projects.vercel.app/
+https://blog-agent-alpha.vercel.app/
 
 ## Overview
 
