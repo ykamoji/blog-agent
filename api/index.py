@@ -31,7 +31,9 @@ def prepare():
     print(data, flush=True)
     hours = int(data.get('hours')) if data.get('hours') else 1000
     email = data.get('email') if data.get('email') else None
-    pipe = Pipeline(hours=hours, email=[email])
+    if email:
+        email = [email]
+    pipe = Pipeline(hours=hours, email=email)
     return pipe
 
 
