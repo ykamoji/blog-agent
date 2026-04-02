@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { triggerFormSchema } from "../utils/validateEmail";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {anthropic, digest, email, scrapper, triggerBackend, youtube} from "../services/api";
+import {anthropic, digest, email, scrapper, youtube} from "../services/api";
 import {useState} from "react";
 
 const HOURS_OPTIONS = [
@@ -19,6 +19,7 @@ const steps = [
   "anthropic",
   "youtube",
   "digest",
+  "ranking",
   "email",
 ] as const;
 
@@ -68,7 +69,10 @@ export default function Sidebar() {
     await runStep("anthropic", () => anthropic(payload));
     await runStep("youtube", () => youtube(payload));
     await runStep("digest", () => digest(payload));
-    await runStep("email", () => email(payload));
+    await runStep("ranking", () => email(payload));
+    await runStep("email", async () =>{
+       await new Promise((resolve) => setTimeout(resolve, 3000));
+    });
   },
 
   onMutate: () => {
@@ -84,7 +88,7 @@ export default function Sidebar() {
   onSuccess: () => {
     reset();
     queryClient.invalidateQueries({ queryKey: ["articles"] });
-    setTimeout(() => setShowProgress(false), 1000);
+    setTimeout(() => setShowProgress(false), 8000);
   },
 
   onError: () => {
