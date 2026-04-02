@@ -8,7 +8,7 @@ export default function Root() {
     <div className="min-h-screen bg-gray-50 px-6 py-8">
       <div className="max-w-9xl mx-auto">
 
-        <h1 className="text-3xl font-bold mb-1">
+        <h1 className="text-3xl text-black font-bold mb-1">
           AI News Dashboard
         </h1>
         <p className="text-gray-500 mb-8">

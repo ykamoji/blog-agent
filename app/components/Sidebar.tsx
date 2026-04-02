@@ -121,10 +121,10 @@ export default function Sidebar() {
               </label>
               <select
                   {...register("hours")}
-                  className="border border-gray-200 rounded-xl px-4 py-2.5 w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                  className="border border-gray-200 text-black rounded-xl px-4 py-2.5 w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
               >
                 {HOURS_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
+                    <option key={opt.value} selected={opt.value == "24"} value={opt.value}>
                       {opt.label}
                     </option>
                 ))}
