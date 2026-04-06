@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "http://192.168.1.3:3000"; // replace
+const API_BASE = "http://192.168.1.17:3000"; // replace
 
 export const fetchArticles = async () => {
   const res = await axios.get(`${API_BASE}/blogs`);
